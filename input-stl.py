@@ -26,7 +26,6 @@ import sys, os, re, argparse
 import subprocess, tempfile
 from lxml import etree
 from subprocess import Popen, PIPE
-
 _version = '0.6'
 
 sys_platform = sys.platform.lower()
@@ -46,16 +45,16 @@ parser.add_argument('--rx', default=None, type=float, help='Rotate STL object ar
 parser.add_argument('--ry', default=None, type=float, help='Rotate STL object around Y-Axis before importing.')
 parser.add_argument('--numbers', dest='numbers', default='false', help='Add layer numbers.')
 parser.add_argument('--center', dest='center', default='false', help='Add center marks.')
-parser.add_argument('--stdout', '--tab', default=None, type=str, help=argparse.SUPPRESS)
+parser.add_argument('--stdout', '--tab', default=None, help=argparse.SUPPRESS)
 parser.add_argument('--slic3r-cmd', '--slic3r_cmd', '-s', default=slic3r, help='Command to invoke slic3r. Default is "'+slic3r+'"')
 parser.add_argument('--output', '-o', default=None, help='SVG output file name or "-" for stdout. Default: Name derived from STL input.') 
-parser.add_argument('stlfile', type=str, help='STL input file to convert to SVG with the same name, but ".svg" suffix.')
+parser.add_argument('stlfile', help='STL input file to convert to SVG with the same name, but ".svg" suffix.')
 
 args = parser.parse_args()
 
 # input-stl.inx advertises use of '$HOME' -- windows has HOMEPATH instead of HOME
 home = os.environ.get('HOME', os.environ.get('HOMEPATH', 'NO-HOME'))
-args.slic3r_cmd = re.sub('^\$HOME(PATH)?', home, args.slic3r_cmd)
+#args.slic3r_cmd = re.sub('^\$HOME(PATH)?', home, args.slic3r_cmd)
 
 if sys_platform.startswith('win'):
   # assert we run the commandline version of slic3r
@@ -294,6 +293,6 @@ except:
   pass
 
 if args.stdout:
-  doc.write(sys.stdout)
+  doc.write(sys.stdout.buffer)
 else:
   doc.write(svgfile, pretty_print=True)
